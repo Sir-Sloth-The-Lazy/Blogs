@@ -159,10 +159,10 @@ button {
    ============================================ */
 
 .page-layout {
-  display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr var(--details-width);
   min-height: 100vh;
   padding-top: var(--nav-height);
+  padding-left: var(--sidebar-width);
+  padding-right: var(--details-width);
 }
 
 .main-content {
@@ -329,9 +329,9 @@ button {
 
 @media (max-width: 1200px) {
   .page-layout {
-    grid-template-columns: var(--sidebar-width) 1fr;
+    padding-right: 0;
   }
-  
+
   .details-panel {
     display: none;
   }
@@ -339,7 +339,7 @@ button {
 
 @media (max-width: 900px) {
   .page-layout {
-    grid-template-columns: 1fr;
+    padding-left: 0;
   }
 
   .sidebar {

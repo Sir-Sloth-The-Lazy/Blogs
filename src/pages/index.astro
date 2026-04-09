@@ -54,8 +54,6 @@ const subjects = [...new Set(posts.map(p => p.data.subject))];
         </div>
       </div>
     </main>
-    <!-- Empty right panel placeholder for layout balance -->
-    <div class="details-panel-placeholder"></div>
   </div>
 </BaseLayout>
 
@@ -175,13 +173,4 @@ const subjects = [...new Set(posts.map(p => p.data.subject))];
     gap: 8px;
   }
 
-  .details-panel-placeholder {
-    width: var(--details-width);
-  }
-
-  @media (max-width: 1200px) {
-    .details-panel-placeholder {
-      display: none;
-    }
-  }
 </style>
