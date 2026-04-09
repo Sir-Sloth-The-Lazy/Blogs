@@ -6,7 +6,7 @@
 
 :root {
   /* Colors — Starlight-inspired dark theme */
-  --bg: #17181c;
+  --bg: #030712;
   --bg-secondary: #1c1d22;
   --bg-card: #23262f;
   --text: #ffffff;
@@ -80,7 +80,7 @@ body {
   font-size: var(--text-base);
   line-height: var(--line-height);
   color: var(--text);
-  background-color: var(--bg);
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, #0f1a2e 0%, #030712 60%);
   overflow-x: hidden;
 }
 

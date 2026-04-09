@@ -72,8 +72,8 @@ const currentPath = Astro.url.pathname;
     width: var(--sidebar-width);
     height: calc(100vh - var(--nav-height));
     overflow-y: auto;
-    border-right: 1px solid var(--border);
-    background: var(--bg);
+  
+    background: transparent;
     z-index: 50;
   }
 
@@ -95,7 +95,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .subject-group {
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
   }
 
   .subject-group[open] > .subject-title .chevron-icon {
@@ -113,7 +113,8 @@ const currentPath = Astro.url.pathname;
     cursor: pointer;
     list-style: none;
     user-select: none;
-    transition: background var(--transition-fast);
+    transition: color var(--transition-fast);
+    border-radius: var(--radius-sm);
   }
 
   .subject-title::-webkit-details-marker {
@@ -121,26 +122,31 @@ const currentPath = Astro.url.pathname;
   }
 
   .subject-title:hover {
-    background: var(--highlight);
+    color: var(--text-secondary);
   }
 
   .chevron-icon {
     flex-shrink: 0;
     transition: transform var(--transition-base);
-    color: var(--text-muted);
+    color: var(--text-faint);
   }
 
+  /* Vertical track line container */
   .subject-links {
+    position: relative;
     padding: var(--spacing-xs) 0;
+    margin-left: calc(var(--spacing-lg) + 5px);
+    border-left: 1px solid var(--border);
   }
 
   .subject-link {
     display: block;
-    padding: 5px var(--spacing-lg) 5px calc(var(--spacing-lg) + 20px);
+    padding: 5px var(--spacing-md) 5px var(--spacing-md);
+    margin-left: -1px;
     font-size: var(--text-sm);
     color: var(--text-muted);
-    transition: color var(--transition-fast), background var(--transition-fast),
-                border-left-color var(--transition-fast);
+    transition: color var(--transition-fast), border-left-color var(--transition-fast),
+                box-shadow var(--transition-fast), text-shadow var(--transition-fast);
     border-left: 2px solid transparent;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -148,15 +154,16 @@ const currentPath = Astro.url.pathname;
   }
 
   .subject-link:hover {
-    color: var(--text);
-    background: var(--highlight);
+    color: var(--text-secondary);
+    border-left-color: var(--text-faint);
   }
 
   .subject-link.is-active {
     color: var(--accent);
-    font-weight: 600;
+    font-weight: 500;
     border-left-color: var(--accent);
-    background: var(--highlight);
+    box-shadow: -2px 0 8px rgba(94, 234, 212, 0.35);
+    text-shadow: 0 0 12px rgba(94, 234, 212, 0.5);
   }
 
   .sidebar-backdrop {
