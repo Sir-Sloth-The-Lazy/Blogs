@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navbar from '../components/Navbar.astro';
 import Sidebar from '../components/Sidebar.astro';
+import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog')).sort(
@@ -52,6 +53,7 @@ const subjects = [...new Set(posts.map(p => p.data.subject))];
             </a>
           ))}
         </div>
+        <Footer />
       </div>
     </main>
   </div>

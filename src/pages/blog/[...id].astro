@@ -48,6 +48,12 @@ const { Content, headings } = await render(post);
           <p class="article-description">{post.data.description}</p>
         </header>
         <Content />
+        <Footer
+          author="Jeevant Prakhar Singh"
+          updatedDate={post.data.date}
+          prev={prev}
+          next={next}
+        />
       </article>
     </main>
     <TableOfContents headings={headings} />
