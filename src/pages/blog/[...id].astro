@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<BaseLayout title={`${post.data.title} — blog.`} description={post.data.description}>
+  <Navbar />
+  <div class="page-layout">
+    <Sidebar />
+    <main class="main-content">
+      <article class="prose animate-fade-in" id="article-content">
+        <header class="article-header">
+          <div class="article-meta">
+            <span class="article-subject">{post.data.subject}</span>
+            <time class="article-date" datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </time>
+          </div>
+          <h1>{post.data.title}</h1>
+          <p class="article-description">{post.data.description}</p>
+        </header>
+        <Content />
+      </article>
+    </main>
+    <TableOfContents 
+      headings={headings} 
+      title={post.data.title}
+      date={post.data.date}
+      description={post.data.description}
+      body={post.body ?? ''}
+    />
+  </div>
+
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress" id="reading-progress"></div>
+</BaseLayout>
+
+<style>
+  .article-header {
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .article-subject {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+  }
+
+  .article-date {
+    font-size: var(--text-sm);
+    color: var(--text-faint);
+  }
+
+  .article-description {
+    font-size: var(--text-base);
+    color: var(--text-muted);
+    margin-top: var(--spacing-sm);
+    line-height: var(--line-height);
+  }
+
+  .reading-progress {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--indicator);
+    z-index: 101;
+    transition: width 100ms linear;
+  }
+</style>
+
+<script>
+  // Reading progress bar
+  function initProgress() {
+    const progressBar = document.getElementById('reading-progress');
+    const article = document.getElementById('article-content');
+    
+    if (!progressBar || !article) return;
+
+    function updateProgress() {
+      const articleRect = article!.getBoundingClientRect();
+      const articleTop = articleRect.top + window.scrollY;
+      const articleHeight = articleRect.height;
+      const windowHeight = window.innerHeight;
+      const scrolled = window.scrollY - articleTop + windowHeight;
+      const total = articleHeight + windowHeight;
+      const progress = Math.min(100, Math.max(0, (scrolled / total) * 100));
+      
+      progressBar!.style.width = `${progress}%`;
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  document.addEventListener('DOMContentLoaded', initProgress);
+  document.addEventListener('astro:page-load', initProgress);
+</script>
