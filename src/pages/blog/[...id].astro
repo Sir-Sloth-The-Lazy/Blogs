@@ -3,17 +3,27 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Navbar from '../../components/Navbar.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
+import Footer from '../../components/Footer.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(post => ({
+  const allPosts = await getCollection('blog');
+  // Sort by subject then order to match sidebar ordering
+  const sorted = allPosts.sort((a, b) =>
+    a.data.subject.localeCompare(b.data.subject) ||
+    (a.data.order ?? 0) - (b.data.order ?? 0)
+  );
+  return sorted.map((post, index) => ({
     params: { id: post.id },
-    props: { post },
+    props: {
+      post,
+      prev: index > 0 ? { title: sorted[index - 1].data.title, href: `/blog/${sorted[index - 1].id}` } : null,
+      next: index < sorted.length - 1 ? { title: sorted[index + 1].data.title, href: `/blog/${sorted[index + 1].id}` } : null,
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prev, next } = Astro.props;
 const { Content, headings } = await render(post);
 ---
 
@@ -40,13 +50,7 @@ const { Content, headings } = await render(post);
         <Content />
       </article>
     </main>
-    <TableOfContents 
-      headings={headings} 
-      title={post.data.title}
-      date={post.data.date}
-      description={post.data.description}
-      body={post.body ?? ''}
-    />
+    <TableOfContents headings={headings} />
   </div>
 
   <!-- Reading Progress Bar -->

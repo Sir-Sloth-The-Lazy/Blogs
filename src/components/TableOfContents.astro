@@ -1,153 +1,65 @@
 ---
 export interface Props {
   headings: { depth: number; slug: string; text: string }[];
-  title: string;
-  date: Date;
-  description: string;
-  body?: string;
 }
 
-const { headings, title, date, description, body = '' } = Astro.props;
-
-// Calculate reading time and word count
-const wordCount = body.split(/\s+/).filter(Boolean).length;
-const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-
-// Format date
-const formattedDate = date.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-});
-
-// Filter headings to only show h2 and h3
+const { headings } = Astro.props;
 const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 
-<aside class="details-panel" id="details-panel">
-  <div class="details-inner">
-    <!-- Article Meta -->
-    <div class="details-meta">
-      <div class="meta-item">
-        <span class="meta-label">Published</span>
-        <span class="meta-value">{formattedDate}</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Reading time</span>
-        <span class="meta-value">{readingTime} min read</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Words</span>
-        <span class="meta-value">{wordCount.toLocaleString()}</span>
-      </div>
+{tocHeadings.length > 0 && (
+  <aside class="toc-panel" id="toc-panel">
+    <div class="toc-inner">
+      <span class="toc-label">On this page</span>
+      <nav class="toc-nav" id="toc-nav" aria-label="Table of contents">
+        <ul class="toc-list">
+          {tocHeadings.map((heading) => (
+            <li class={`toc-item depth-${heading.depth}`}>
+              <a
+                href={`#${heading.slug}`}
+                class="toc-link"
+                data-heading-slug={heading.slug}
+                id={`toc-link-${heading.slug}`}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
-
-    <!-- Table of Contents -->
-    {tocHeadings.length > 0 && (
-      <div class="toc-section">
-        <span class="toc-label">On this page</span>
-        <nav class="toc-nav" id="toc-nav" aria-label="Table of contents">
-          <div class="toc-indicator" id="toc-indicator"></div>
-          <ul class="toc-list">
-            {tocHeadings.map((heading) => (
-              <li class={`toc-item depth-${heading.depth}`}>
-                <a 
-                  href={`#${heading.slug}`} 
-                  class="toc-link"
-                  data-heading-slug={heading.slug}
-                  id={`toc-link-${heading.slug}`}
-                >
-                  {heading.text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-    )}
-  </div>
-</aside>
+  </aside>
+)}
 
 <style>
-  .details-panel {
+  .toc-panel {
     position: fixed;
     top: var(--nav-height);
     right: 0;
     width: var(--details-width);
     height: calc(100vh - var(--nav-height));
     overflow-y: auto;
-    padding: var(--spacing-xl) var(--spacing-lg);
-    border-left: 1px solid var(--border);
-    background: var(--bg);
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-xl) var(--spacing-md);
+    background: transparent;
   }
 
-  .details-inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
-  }
-
-  .details-meta {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    padding-bottom: var(--spacing-lg);
-    border-bottom: 1px solid var(--border-light);
-  }
-
-  .meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .meta-label {
-    font-size: var(--text-xs);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-faint);
-  }
-
-  .meta-value {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-
-  .toc-section {
+  .toc-inner {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
   }
 
   .toc-label {
-    font-size: var(--text-xs);
+    font-size: clamp(0.72rem, 1vw, 0.85rem);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-faint);
-  }
-
-  .toc-nav {
-    position: relative;
-  }
-
-  .toc-indicator {
-    position: absolute;
-    left: 0;
-    width: 2px;
-    height: 20px;
-    background: var(--indicator);
-    border-radius: 1px;
-    transition: top 0.2s ease, height 0.2s ease, opacity 0.2s ease;
-    opacity: 0;
+    letter-spacing: -0.01em;
+    color: var(--text);
   }
 
   .toc-list {
     display: flex;
     flex-direction: column;
-    border-left: 1px solid var(--border-light);
+    border-left: 1px solid var(--border);
   }
 
   .toc-item {
@@ -156,33 +68,36 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 
   .toc-link {
     display: block;
-    padding: 4px 0 4px var(--spacing-md);
-    font-size: var(--text-xs);
+    padding: 4px var(--spacing-sm) 4px var(--spacing-md);
+    margin-left: -1px;
+    font-size: clamp(0.65rem, 0.95vw, 0.78rem);
     color: var(--text-muted);
     line-height: 1.5;
-    transition: color var(--transition-fast);
+    transition: color var(--transition-fast), border-left-color var(--transition-fast),
+                text-shadow var(--transition-fast), box-shadow var(--transition-fast);
     border-left: 2px solid transparent;
-    margin-left: -1px;
   }
 
   .toc-link:hover {
-    color: var(--text);
+    color: var(--text-secondary);
+    border-left-color: var(--text-faint);
   }
 
   .toc-link.is-active {
     color: var(--accent);
-    font-weight: 600;
+    font-weight: 500;
     border-left-color: var(--accent);
+    box-shadow: -2px 0 8px rgba(94, 234, 212, 0.35);
+    text-shadow: 0 0 12px rgba(94, 234, 212, 0.5);
   }
 
   .depth-3 .toc-link {
     padding-left: calc(var(--spacing-md) + var(--spacing-sm));
-    font-size: 0.7rem;
+    font-size: clamp(0.6rem, 0.85vw, 0.72rem);
   }
 </style>
 
 <script>
-  // Scroll-spy: IntersectionObserver to track active heading
   function initScrollSpy() {
     const tocLinks = document.querySelectorAll('.toc-link');
     if (tocLinks.length === 0) return;
@@ -197,43 +112,33 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 
     if (headingElements.length === 0) return;
 
-    let activeSlug = headingSlugs[0];
+    // Set first link active on load
+    tocLinks[0]?.classList.add('is-active');
 
-    function setActive(slug: string) {
-      if (slug === activeSlug) return;
-      activeSlug = slug;
-
-      tocLinks.forEach((link) => {
-        const linkSlug = (link as HTMLElement).dataset.headingSlug;
-        link.classList.toggle('is-active', linkSlug === slug);
-      });
-    }
-
-    // Use scroll-based detection for most accurate tracking
     function onScroll() {
-      const scrollTop = window.scrollY;
-      const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 56;
-      const offset = navHeight + 60;
+      const navHeight = parseFloat(getComputedStyle(document.documentElement)
+        .getPropertyValue('--nav-height')) || 56;
+      const offset = navHeight + 80;
 
       let current = headingSlugs[0];
       for (let i = 0; i < headingElements.length; i++) {
-        const el = headingElements[i];
-        if (el.getBoundingClientRect().top <= offset) {
+        if (headingElements[i].getBoundingClientRect().top <= offset) {
           current = headingSlugs[i];
         } else {
           break;
         }
       }
 
-      setActive(current);
+      tocLinks.forEach((link) => {
+        const slug = (link as HTMLElement).dataset.headingSlug;
+        link.classList.toggle('is-active', slug === current);
+      });
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll(); // initial check
+    onScroll();
   }
 
-  // Run on page load
   document.addEventListener('DOMContentLoaded', initScrollSpy);
-  // Also run for Astro view transitions
   document.addEventListener('astro:page-load', initScrollSpy);
 </script>
