@@ -83,3 +83,73 @@ From the above example the takeaway is that :
 
 1. `ptr++` or `ptr+1` moves the pointer to the next element in the array, not just to the next memory address. This is because the pointer arithmetic takes into account the size of the data type it points to (in this case, `int` `ptr+1` &rArr;  if `p=1000` and `sizeof(int) = 4`, then `ptr+1` will be 1004).
 2. This only works for contigous memory locations, such as arrays. If you have a pointer that points to a single variable, incrementing it would lead to undefined behavior, __also maps, linked lists, heaps etc. are not contigous memory locations so pointer arithmetic does not apply to them__.
+
+## Arrays ARE NOT POINTERS !!
+
+People often believe that 
+> arrays are pointers to the first element of a contigous block of memory
+__This is a misconception__, while it is true that the name of an array can be used as a pointer to its first element, arrays and pointers are fundamentally different in C++.
+
+```cpp
+int arr[5]; // arr is an array of 5 integers
+```
+Array = actual block of memory that can hold multiple values of the same type.
+
+```cpp
+int* ptr = arr; // ptr is a pointer to the first element of arr, here the array name has 
+//decayed to a pointer
+```
+
+
+But they are different as :
+```cpp
+std::cout << sizeof(arr) << std::endl; // Output: 20 (5 integers * 4 bytes each)
+std::cout << sizeof(ptr) << std::endl; // Output: 8 (size of a pointer on a 64-bit system)
+```
+
+Huge difference !
+
+## Weird but True
+
+These are equivalent:
+```cpp
+arr[2]
+```
+and
+```cpp
+*(arr + 2)
+```
+Because indexing internally uses pointer arithmetic.
+
+Even crazier:
+```cpp
+2[arr]
+```
+works too.
+
+Because:
+```cpp
+2[arr]
+= *(2 + arr)
+= arr[2]
+```
+Almost nobody writes this, but it’s valid C++.
+
+> Note : This syntax is only used for accessing the elements and will throw an error if you try to assign a value to it.
+
+## Dangling Pointers (The HangMan of Pointers)
+```
+int* p;
+
+{
+    int x = 5;
+    p = &x;
+}
+
+cout << *p; // BAD
+```
+- `x` died after block ended.
+
+- `p` now points to invalid memory.
+
+This is a __dangling pointer__. These bugs can randomly work or crash.
