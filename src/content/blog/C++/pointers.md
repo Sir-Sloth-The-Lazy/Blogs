@@ -6,7 +6,7 @@ subject : "C++"
 order : 1
 ---
 
-# Pointers and Why do we need it ?
+## Pointers and Why do we need it ?
 A pointer stores the memory address of a variable.
 
 ```cpp
@@ -25,7 +25,7 @@ x = 10
 ptr = 0x1011
 ```
 
-### Important Distinction to know when you set out
+## Important Distinction to know when you set out
 ```cpp
 int *p ;
 ```
@@ -47,7 +47,7 @@ p &rArr; is an `integer pointer` variable
 
 b &rArr; is an `integer` variable
 
-# Two Different Meaning of `*` in C++
+## Two Different Meaning of `*` in C++
 The `*` symbol in C++ has two distinct meanings based on the context in which it is used:
 
 1. **Pointer Declaration**: When used in a variable declaration, the `*` indicates that the variable being declared is a pointer to a specific type. For example:
@@ -63,11 +63,11 @@ The `*` symbol in C++ has two distinct meanings based on the context in which it
    ```
 In this context, `*ptr` retrieves the value stored at the memory address that `ptr` is pointing to.
 
-#  Size does not matter
+## Size does not matter
 
 Well it does but not in the way you think :smiley: , in C++, __the size of a pointer does not change regardless of the type of variable it points to__, simply because a pointer is just an address holder, but they might vary based on the architecture of the system.
 
-# I did not like arithmetic (pointer are not arithmetic)
+## I did not like arithmetic (pointer are not arithmetic)
 
 I was more of a guy who liked finding x rather than numbers , well sorry for digressing a bit :sweat_smile: , however, pointer arithmetic is quite useful , you should believe it coming from me!.
 
