@@ -21,6 +21,7 @@ sortedSubjects.forEach(key => {
 
 // Get current page path
 const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
@@ -42,12 +43,12 @@ const currentPath = Astro.url.pathname;
           </summary>
           <ul class="subject-links">
             {subjects[subject].map((post) => {
-              const postPath = `/blog/${post.id}`;
+              const postPath = `${base}/blog/${post.id}`;
               const isActive = currentPath === postPath || currentPath === `${postPath}/`;
               return (
                 <li>
-                  <a 
-                    href={postPath} 
+                  <a
+                    href={postPath}
                     class:list={['subject-link', { 'is-active': isActive }]}
                     id={`sidebar-link-${post.id}`}
                     data-post-id={post.id}

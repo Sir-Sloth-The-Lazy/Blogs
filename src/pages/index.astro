@@ -11,6 +11,7 @@ const posts = (await getCollection('blog')).sort(
 
 // Group by subject for display
 const subjects = [...new Set(posts.map(p => p.data.subject))];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <BaseLayout title="blog. — A minimalistic blog" description="A minimalistic blog about code, systems, and ideas.">
@@ -28,7 +29,7 @@ const subjects = [...new Set(posts.map(p => p.data.subject))];
 
         <div class="posts-grid">
           {posts.map((post, index) => (
-            <a href={`/blog/${post.id}`} class="post-card" id={`post-card-${post.id}`} style={`animation-delay: ${index * 60}ms`}>
+            <a href={`${base}/blog/${post.id}`} class="post-card" id={`post-card-${post.id}`} style={`animation-delay: ${index * 60}ms`}>
               <div class="post-card-inner">
                 <div class="post-card-meta">
                   <span class="post-subject">{post.data.subject}</span>

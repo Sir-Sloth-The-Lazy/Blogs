@@ -9,6 +9,7 @@ import { getCollection, render } from 'astro:content';
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog');
   // Sort by subject then order to match sidebar ordering
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const sorted = allPosts.sort((a, b) =>
     a.data.subject.localeCompare(b.data.subject) ||
     (a.data.order ?? 0) - (b.data.order ?? 0)
@@ -17,8 +18,8 @@ export async function getStaticPaths() {
     params: { id: post.id },
     props: {
       post,
-      prev: index > 0 ? { title: sorted[index - 1].data.title, href: `/blog/${sorted[index - 1].id}` } : null,
-      next: index < sorted.length - 1 ? { title: sorted[index + 1].data.title, href: `/blog/${sorted[index + 1].id}` } : null,
+      prev: index > 0 ? { title: sorted[index - 1].data.title, href: `${base}/blog/${sorted[index - 1].id}` } : null,
+      next: index < sorted.length - 1 ? { title: sorted[index + 1].data.title, href: `${base}/blog/${sorted[index + 1].id}` } : null,
     },
   }));
 }
